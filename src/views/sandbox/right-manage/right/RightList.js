@@ -44,9 +44,6 @@ function RightList(props) {
             render: (item) => {
                 return <div>
                     <Button danger shape="circle" icon={<DeleteOutlined/>} onClick={() => confirmMethod(item)}/>
-                    {
-
-                    }
                     <Popover content={<Switch checkedChildren="开启" unCheckedChildren="关闭"
                                               checked={item.pagepermisson === 1}
                                               onClick={() => switchMethod(item)}/>}
