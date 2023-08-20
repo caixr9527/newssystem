@@ -25,6 +25,7 @@ function NewsSandBox(props) {
                         padding: 24,
                         minHeight: 280,
                         background: colorBgContainer,
+                        overflow: "auto"
                     }}
                 >
                     <Outlet></Outlet>
