@@ -1,9 +1,12 @@
-import React, {forwardRef, useState} from 'react';
+import React, {forwardRef, useEffect, useState} from 'react';
 import {Form, Input, Select} from "antd";
 
 const UserForm = forwardRef((props, ref) => {
     const [disableRegionSelect, setIsDisableRegionSelect] = useState(false);
     // const [form] = Form.useForm();
+    useEffect(()=>{
+        setIsDisableRegionSelect(props.isUpdateDisable)
+    },[props.isUpdateDisable])
     return (
         <Form
             // form={form}
