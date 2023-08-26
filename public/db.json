@@ -3,19 +3,19 @@
     {
       "id": 1,
       "username": "admin",
-      "password": 123456,
+      "password": 2314,
       "roleState": true,
       "default": true,
       "region": "",
       "roleId": 1
     },
     {
-      "username": "铁锤1222",
+      "username": "铁锤",
       "password": "123",
       "roleState": true,
       "default": false,
-      "region": "南美洲",
-      "roleId": 3,
+      "region": "亚洲",
+      "roleId": 2,
       "id": 2
     },
     {

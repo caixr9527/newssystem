@@ -3,14 +3,13 @@ import {Button, Modal, Switch, Table} from "antd";
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from "@ant-design/icons";
 import axios from "axios";
 import UserForm from "../../../component/user-manage/UserForm";
-import roleList from "../right-manage/role/RoleList";
 
 
 const {confirm} = Modal
 
 function UserList(props) {
     const [dataSource, setDataSource] = useState([]);
-    const [region, setRegion] = useState([]);
+    const [regionList, setRegionList] = useState([]);
     const [roles, setRoles] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
@@ -19,11 +18,22 @@ function UserList(props) {
     const [isUpdateDisable, setIsUpdateDisable] = useState(false);
     const [current, setCurrent] = useState(null)
 
+    const {roleId, username, region} = JSON.parse(localStorage.getItem("token"))
+
+    const roleObj = {
+        "1": "superadmin",
+        "2": "admin",
+        "3": "editor"
+    }
     useEffect(() => {
         axios.get("http://localhost:5000/users?_expand=role")
             .then(res => {
                 console.log(res.data)
-                setDataSource(res.data)
+                const list = res.data
+                setDataSource(roleObj[roleId] === "superadmin" ? list : [
+                    ...list.filter(item => item.username === username),
+                    ...list.filter(item => item.region === region && roleObj[item.roleId] === "editor")
+                ])
             })
     }, [])
 
@@ -33,7 +43,7 @@ function UserList(props) {
                 res.data.forEach(item => {
                     item['label'] = item?.value
                 })
-                setRegion(res.data)
+                setRegionList(res.data)
             })
     }, [])
 
@@ -55,7 +65,7 @@ function UserList(props) {
             title: '区域',
             dataIndex: 'region',
             filters: [
-                ...region.map(item => ({
+                ...regionList.map(item => ({
                     text: item.title,
                     value: item.value
                 })),
@@ -221,7 +231,7 @@ function UserList(props) {
                 }}
                 onOk={() => addUser()}
             >
-                <UserForm regionList={region} roleList={roles} ref={addUserForm}/>
+                <UserForm regionList={regionList} roleList={roles} ref={addUserForm}/>
             </Modal>
 
 
@@ -236,7 +246,8 @@ function UserList(props) {
                 }}
                 onOk={() => updateUser()}
             >
-                <UserForm regionList={region} roleList={roles} ref={updateUserForm} isUpdateDisable={isUpdateDisable}/>
+                <UserForm regionList={regionList} roleList={roles} ref={updateUserForm}
+                          isUpdateDisable={isUpdateDisable} isUpdate={true}/>
             </Modal>
         </div>
     );

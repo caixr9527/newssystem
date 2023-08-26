@@ -4,9 +4,23 @@ import {Form, Input, Select} from "antd";
 const UserForm = forwardRef((props, ref) => {
     const [disableRegionSelect, setIsDisableRegionSelect] = useState(false);
     // const [form] = Form.useForm();
-    useEffect(()=>{
+    useEffect(() => {
         setIsDisableRegionSelect(props.isUpdateDisable)
-    },[props.isUpdateDisable])
+    }, [props.isUpdateDisable])
+
+    const {roleId, region} = JSON.parse(localStorage.getItem("token"))
+    const roleObj = {
+        "1": "superadmin",
+        "2": "admin",
+        "3": "editor"
+    }
+    const checkRegionDisabled = (item) => {
+        if (props.isUpdate) {
+            return roleObj[roleId] !== "superadmin";
+        }
+
+    }
+
     return (
         <Form
             // form={form}
@@ -30,7 +44,7 @@ const UserForm = forwardRef((props, ref) => {
             <Form.Item
                 name="region"
                 label="区域"
-                rules={disableRegionSelect ? [] : [{required: true, message: '请输入区域!'}]}
+                rules={disableRegionSelect ? [] : [{required: true, message: '请选择区域!'}]}
             >
                 <Select
                     showSearch
@@ -40,7 +54,7 @@ const UserForm = forwardRef((props, ref) => {
                         console.log(item)
                     }}
                     options={props.regionList}
-                    disabled={disableRegionSelect}
+                    disabled={checkRegionDisabled()}
                 />
             </Form.Item>
             <Form.Item
