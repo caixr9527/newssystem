@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {Button, Dropdown, Layout, Space, theme, Avatar} from "antd";
 import type {MenuProps} from 'antd';
-import {MenuFoldOutlined, MenuUnfoldOutlined, DownOutlined, UserOutlined} from '@ant-design/icons';
+import {Avatar, Button, Dropdown, Layout, Space, theme} from "antd";
+import {MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined} from '@ant-design/icons';
 import {useNavigate} from "react-router-dom";
 
 
