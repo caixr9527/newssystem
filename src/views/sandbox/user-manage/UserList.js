@@ -26,7 +26,7 @@ function UserList(props) {
         "3": "editor"
     }
     useEffect(() => {
-        axios.get("http://localhost:5000/users?_expand=role")
+        axios.get("/users?_expand=role")
             .then(res => {
                 console.log(res.data)
                 const list = res.data
@@ -38,7 +38,7 @@ function UserList(props) {
     }, [])
 
     useEffect(() => {
-        axios.get("http://localhost:5000/regions")
+        axios.get("/regions")
             .then(res => {
                 res.data.forEach(item => {
                     item['label'] = item?.value
@@ -48,7 +48,7 @@ function UserList(props) {
     }, [])
 
     useEffect(() => {
-        axios.get("http://localhost:5000/roles")
+        axios.get("/roles")
             .then(res => {
 
                 res.data.forEach(item => {
@@ -127,7 +127,7 @@ function UserList(props) {
 
     const switchMethod = (item) => {
 
-        axios.patch(`http://localhost:5000/users/${item.id}`, {
+        axios.patch(`/users/${item.id}`, {
             roleState: !item.roleState
         }).then(res => {
             item.roleState = !item.roleState
@@ -162,7 +162,7 @@ function UserList(props) {
     }
 
     const deleteMethod = (item) => {
-        axios.delete(`http://localhost:5000/users/${item.id}`).then(
+        axios.delete(`/users/${item.id}`).then(
             setDataSource(dataSource.filter(data => data.id !== item.id))
         )
 
@@ -173,7 +173,7 @@ function UserList(props) {
         addUserForm.current.validateFields().then(value => {
             console.log(value)
             setIsOpen(false)
-            axios.post(`http://localhost:5000/users`, {
+            axios.post(`/users`, {
                 ...value,
                 "roleState": true,
                 "default": false
@@ -188,7 +188,7 @@ function UserList(props) {
     function updateUser() {
         updateUserForm.current.validateFields().then(value => {
             setIsUpdateOpen(false)
-            axios.patch(`http://localhost:5000/users/${current.id}`,
+            axios.patch(`/users/${current.id}`,
                 value
             ).then(
                 setDataSource(dataSource.map(item => {

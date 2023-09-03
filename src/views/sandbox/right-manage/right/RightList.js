@@ -10,7 +10,7 @@ function RightList(props) {
 
     const [dataSource, setDataSource] = useState([]);
     useEffect(() => {
-        axios.get("http://localhost:5000/rights?_embed=children").then(res => {
+        axios.get("/rights?_embed=children").then(res => {
             console.log(res.data)
             res.data.filter(r => r.children.length === 0).map(r => r.children = null)
             setDataSource(res.data)
@@ -61,13 +61,13 @@ function RightList(props) {
         item.pagepermisson = item.pagepermisson === 1 ? 0 : 1
 
         if (item.grade === 1) {
-             axios.patch(`http://localhost:5000/rights/${item.id}`,{
+             axios.patch(`/rights/${item.id}`,{
                  pagepermisson: item.pagepermisson
              }).then(
                  setDataSource([...dataSource])
              )
         }else {
-            axios.patch(`http://localhost:5000/children/${item.id}`,{
+            axios.patch(`/children/${item.id}`,{
                 pagepermisson: item.pagepermisson
             }).then(
                 setDataSource([...dataSource])
@@ -92,13 +92,13 @@ function RightList(props) {
     const deleteMethod = (item) => {
         console.log(item)
         if (item.grade === 1) {
-            axios.delete(`http://localhost:5000/rights/${item.id}`).then(
+            axios.delete(`/rights/${item.id}`).then(
                 setDataSource(dataSource.filter(i => i.id !== item.id))
             )
         } else {
             let list = dataSource.filter(data => data.id === item.rightId)
             list[0].children = list[0].children.filter(data => data.id !== item.id)
-            axios.delete(`http://localhost:5000/children/${item.id}`).then(
+            axios.delete(`/children/${item.id}`).then(
                 setDataSource([...dataSource])
             )
         }

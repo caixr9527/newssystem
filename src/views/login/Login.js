@@ -8,7 +8,7 @@ function Login(props) {
     const navigate = useNavigate()
 
     const onFinish = (values: any) => {
-        axios.get(`http://localhost:5000/users?username=${values.username}&password=${values.password}&roleState=true&_expand=role`)
+        axios.get(`/users?username=${values.username}&password=${values.password}&roleState=true&_expand=role`)
             .then(res => {
                 console.log(res.data)
                 if (res.data.length === 0) {

@@ -16,6 +16,8 @@ import Unpublished from "../views/sandbox/publish-manage/Unpublished";
 import Published from "../views/sandbox/publish-manage/Published";
 import Sunset from "../views/sandbox/publish-manage/Sunset";
 import axios from "axios";
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 const LocalRouterMap = {
     "/home": <Home/>,
@@ -38,13 +40,25 @@ function IndexRouter(props) {
     const [BackRouteList, setBackRouteList] = useState([])
     useEffect(() => {
         Promise.all([
-            axios.get("http://localhost:5000/rights"),
-            axios.get("http://localhost:5000/children"),
+            axios.get("/rights"),
+            axios.get("/children"),
         ]).then(res => {
             setBackRouteList([...res[0].data, ...res[1].data])
         })
     }, [])
 
+    const checkRoute = (item) => {
+        return LocalRouterMap[item.key] && item.pagepermisson
+    }
+
+    const {role: {rights}} = JSON.parse(localStorage.getItem("token"))
+    const checkUserPermission = (item) => {
+        return rights.includes(item.key)
+    }
+    NProgress.start()
+    useEffect(()=>{
+        NProgress.done()
+    })
     return (
         <Routes>
             <Route path="/login" element={<Login/>}></Route>
@@ -55,13 +69,16 @@ function IndexRouter(props) {
             }>
                 {
                     BackRouteList.map((item, index) => {
-                        return (
-                            <Route key={index}
-                                   exact
-                                   path={item.key}
-                                   element= {<AuthComponent> {LocalRouterMap[item.key]} </AuthComponent>}
-                            />
-                        );
+                        if (checkRoute(item) && checkUserPermission(item)) {
+                            return (
+                                <Route key={index}
+                                       exact
+                                       path={item.key}
+                                       element={<AuthComponent> {LocalRouterMap[item.key]} </AuthComponent>}
+                                />
+                            );
+                        }
+                        return null
                     })
                 }
                 BackRouteList.length>0 && <Route path="*" element={<NotFound/>}></Route>

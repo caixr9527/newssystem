@@ -41,13 +41,13 @@ function RoleList(props) {
     ]
 
     useEffect(() => {
-        axios.get("http://localhost:5000/roles").then(res => {
+        axios.get("/roles").then(res => {
             console.log(res.data)
             setDataSource(res.data)
         })
     }, [])
     useEffect(() => {
-        axios.get("http://localhost:5000/rights?_embed=children").then(res => {
+        axios.get("/rights?_embed=children").then(res => {
             console.log(res.data)
             setrightList(res.data)
         })
@@ -67,7 +67,7 @@ function RoleList(props) {
 
     const deleteMethod = (item) => {
         console.log(item)
-        axios.delete(`http://localhost:5000/roles/${item.id}`).then(
+        axios.delete(`/roles/${item.id}`).then(
             setDataSource(dataSource.filter(i => i.id !== item.id))
         )
     }
@@ -77,7 +77,7 @@ function RoleList(props) {
         console.log(currentId)
         setIsModalOpen(false);
 
-        axios.patch(`http://localhost:5000/roles/${currentId}`, {
+        axios.patch(`/roles/${currentId}`, {
             rights: currentRights
         }).then(
             setDataSource(dataSource.map(item => {
