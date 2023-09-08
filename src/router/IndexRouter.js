@@ -18,6 +18,7 @@ import Sunset from "../views/sandbox/publish-manage/Sunset";
 import axios from "axios";
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import NewsPreview from "../views/sandbox/news-manage/NewsPreview";
 
 const LocalRouterMap = {
     "/home": <Home/>,
@@ -27,6 +28,7 @@ const LocalRouterMap = {
     "/news-manage/add": <NewsAdd/>,
     "/news-manage/draft": <NewsDraft/>,
     "/news-manage/category": <NewsCategory/>,
+    "/news-manage/preview/:id": <NewsPreview/>,
     "/audit-manage/audit": <Audit/>,
     "/audit-manage/list": <AuditList/>,
     "/publish-manage/unpublished": <Unpublished/>,
@@ -48,7 +50,7 @@ function IndexRouter(props) {
     }, [])
 
     const checkRoute = (item) => {
-        return LocalRouterMap[item.key] && item.pagepermisson
+        return LocalRouterMap[item.key] && (item.pagepermisson || item.routepermisson)
     }
 
     const {role: {rights}} = JSON.parse(localStorage.getItem("token"))
@@ -56,7 +58,7 @@ function IndexRouter(props) {
         return rights.includes(item.key)
     }
     NProgress.start()
-    useEffect(()=>{
+    useEffect(() => {
         NProgress.done()
     })
     return (
