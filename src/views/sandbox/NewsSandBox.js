@@ -2,11 +2,11 @@ import React from 'react';
 import TopHeader from "../../component/TopHeader";
 import SideMenu from "../../component/SideMenu";
 import {Outlet} from "react-router-dom";
-import {Layout, theme} from "antd";
+import {Layout, Spin, theme} from "antd";
 import './NewsSandBox.css'
+import {connect} from "react-redux";
 
 const {Content} = Layout
-
 
 
 function NewsSandBox(props) {
@@ -17,8 +17,11 @@ function NewsSandBox(props) {
     return (
         <Layout>
             <SideMenu></SideMenu>
+
             <Layout>
+
                 <TopHeader></TopHeader>
+
                 <Content
                     style={{
                         margin: '24px 16px',
@@ -28,13 +31,22 @@ function NewsSandBox(props) {
                         overflow: "auto"
                     }}
                 >
-                    <Outlet></Outlet>
+                    <Spin tip="加载中..." size="large" spinning={props.isLoading}>
+                        <Outlet></Outlet>
+                    </Spin>
                 </Content>
 
             </Layout>
+
 
         </Layout>
     );
 }
 
-export default NewsSandBox;
+const mapStateToProps = ({LoadingReducer: {isLoading}}) => {
+    return {
+        isLoading
+    }
+}
+
+export default connect(mapStateToProps)(NewsSandBox);

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {Button, Modal, Table} from "antd";
+import {Button, Modal, notification, Table} from "antd";
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, CloudUploadOutlined} from "@ant-design/icons";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
 const {confirm} = Modal
 
@@ -12,12 +12,27 @@ function NewsDraft(props) {
 
     const {username} = JSON.parse(localStorage.getItem("token"))
 
+    const navigate = useNavigate()
+
     useEffect(() => {
         axios.get(`/news?author=${username}&auditState=0&_expand=category`).then(res => {
             console.log(res.data)
             setDataSource(res.data)
         })
     }, [username])
+
+    const handleCheck = (id) => {
+        axios.patch(`/news/${id}`, {
+            auditState: 1
+        }).then(res => {
+            navigate('/audit-manage/list')
+            notification.info({
+                message: `通知`,
+                description: `您可以到审核列表中查看`,
+                placement: "bottomRight"
+            })
+        })
+    }
 
     const columns = [
         {
@@ -54,8 +69,10 @@ function NewsDraft(props) {
             render: (item) => {
                 return <div>
                     <Button danger shape="circle" icon={<DeleteOutlined/>} onClick={() => confirmMethod(item)}/>
-                    <Button type="primary" shape="circle" icon={<EditOutlined/>}/>
-                    <Button type="primary" shape="circle" icon={<CloudUploadOutlined/>}/>
+                    <Button type="primary" shape="circle" icon={<EditOutlined/>}
+                            onClick={() => navigate(`/news-manage/update/${item.id}`)}/>
+                    <Button type="primary" shape="circle" icon={<CloudUploadOutlined/>}
+                            onClick={() => handleCheck(item.id)}/>
                 </div>
             }
         },

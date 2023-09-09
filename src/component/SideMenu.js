@@ -4,6 +4,7 @@ import {Layout, Menu} from "antd";
 import './index.css'
 import {useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
+import {connect} from "react-redux";
 
 type MenuItem = Required<MenuProps>['items'][number];
 const {Sider} = Layout
@@ -25,7 +26,6 @@ function getItem(
 }
 
 function SideMenu(props) {
-    const [collapsed, setCollapsed] = useState(false);
     const navigate = useNavigate()
     const location = useLocation();
     const [menuItem, setMenuItem] = useState([])
@@ -63,7 +63,7 @@ function SideMenu(props) {
     const defaultSelectedKeys = [location.pathname]
     const defaultOpenKeys = ["/" + location.pathname.split("/")[1]]
     return (
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+        <Sider trigger={null} collapsible collapsed={props.isCollapsed}>
             <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
                 <div className="logo">全球新闻发布管理系统</div>
                 <div style={{flex: 1, overflow: "auto"}}>
@@ -83,4 +83,10 @@ function SideMenu(props) {
     );
 }
 
-export default SideMenu;
+const mapStateToProps = ({CollapsedReducer: {isCollapsed}}) => {
+    return {
+        isCollapsed
+    }
+}
+
+export default connect(mapStateToProps,)(SideMenu);

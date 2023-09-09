@@ -3,12 +3,12 @@ import type {MenuProps} from 'antd';
 import {Avatar, Button, Dropdown, Layout, Space, theme} from "antd";
 import {MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined} from '@ant-design/icons';
 import {useNavigate} from "react-router-dom";
+import {connect} from "react-redux";
 
 
 const {Header} = Layout;
 
 function TopHeader(props) {
-    const [collapsed, setCollapsed] = useState(false);
     const navigate = useNavigate()
     const {
         token: {colorBgContainer},
@@ -32,8 +32,10 @@ function TopHeader(props) {
         <Header style={{padding: 0, background: colorBgContainer}}>
             <Button
                 type="text"
-                icon={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
-                onClick={() => setCollapsed(!collapsed)}
+                icon={props.isCollapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
+                onClick={() => {
+                    props.changeCollapsed()
+                }}
                 style={{
                     fontSize: '16px',
                     width: 64,
@@ -41,12 +43,13 @@ function TopHeader(props) {
                 }}
             />
             <div style={{float: "right"}}>
-                <span style={{padding:"10px"}}>欢迎【{roleName}】<span style={{color:"#1890ff",padding:"5px"}}>{username}</span>回来!</span>
+                <span style={{padding: "10px"}}>欢迎【{roleName}】<span
+                    style={{color: "#1890ff", padding: "5px"}}>{username}</span>回来!</span>
                 <Dropdown menu={{items, onClick}}>
                     {/*<a onClick={(e) => e.preventDefault()}>*/}
-                        <Space>
-                            <Avatar size="large" icon={<UserOutlined/>}/>
-                        </Space>
+                    <Space>
+                        <Avatar size="large" icon={<UserOutlined/>}/>
+                    </Space>
                     {/*</a>*/}
                 </Dropdown>
             </div>
@@ -54,4 +57,17 @@ function TopHeader(props) {
     );
 }
 
-export default TopHeader;
+const mapStateToProps = ({CollapsedReducer: {isCollapsed}}) => {
+    return {
+        isCollapsed
+    }
+}
+
+const mapDispatchToProps = {
+    changeCollapsed() {
+        return {
+            type: "change_collapsed"
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TopHeader);

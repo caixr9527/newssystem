@@ -19,6 +19,9 @@ import axios from "axios";
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import NewsPreview from "../views/sandbox/news-manage/NewsPreview";
+import NewsUpdate from "../views/sandbox/news-manage/NewsUpdate";
+import News from "../views/news/News";
+import Detail from "../views/news/Detail";
 
 const LocalRouterMap = {
     "/home": <Home/>,
@@ -29,6 +32,7 @@ const LocalRouterMap = {
     "/news-manage/draft": <NewsDraft/>,
     "/news-manage/category": <NewsCategory/>,
     "/news-manage/preview/:id": <NewsPreview/>,
+    "/news-manage/update/:id": <NewsUpdate/>,
     "/audit-manage/audit": <Audit/>,
     "/audit-manage/list": <AuditList/>,
     "/publish-manage/unpublished": <Unpublished/>,
@@ -53,17 +57,22 @@ function IndexRouter(props) {
         return LocalRouterMap[item.key] && (item.pagepermisson || item.routepermisson)
     }
 
-    const {role: {rights}} = JSON.parse(localStorage.getItem("token"))
-    const checkUserPermission = (item) => {
-        return rights.includes(item.key)
-    }
+    // const {role: {rights}} = JSON.parse(localStorage.getItem("token"))
+    // const checkUserPermission = (item) => {
+    //     return rights.includes(item.key)
+    // }
     NProgress.start()
     useEffect(() => {
         NProgress.done()
     })
     return (
+
         <Routes>
+
             <Route path="/login" element={<Login/>}></Route>
+            <Route path="/news" element={<News/>}></Route>
+            <Route path="/detail/:id" element={<Detail/>}></Route>
+
             <Route path="/" element={
                 <AuthComponent>
                     <NewsSandBox/>
@@ -71,7 +80,7 @@ function IndexRouter(props) {
             }>
                 {
                     BackRouteList.map((item, index) => {
-                        if (checkRoute(item) && checkUserPermission(item)) {
+                        if (checkRoute(item)/* && checkUserPermission(item)*/) {
                             return (
                                 <Route key={index}
                                        exact
@@ -85,7 +94,6 @@ function IndexRouter(props) {
                 }
                 BackRouteList.length>0 && <Route path="*" element={<NotFound/>}></Route>
             </Route>
-
         </Routes>
     );
 }
